@@ -1,7 +1,7 @@
 # This is a fork
-### Original https://github.com/alexander-wecode/csgoHue
+### [Original](https://github.com/alexander-wecode/csgoHue)
 
-# csgo-hue
+# csgo-arduino
 
 Electron app for capturing csgo game events and triggering Arduino lights based on game events
 
