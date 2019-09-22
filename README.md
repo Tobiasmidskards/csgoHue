@@ -1,3 +1,6 @@
+### This is a fork
+# Original https://github.com/alexander-wecode/csgoHue
+
 # csgo-hue
 
 Electron app for capturing csgo game events and triggering Hue lights based on game events
