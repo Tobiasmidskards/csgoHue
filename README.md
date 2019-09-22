@@ -23,6 +23,9 @@ npm run lint
 
 ```
 
+## Arduino
+Code [here](https://github.com/Tobiasmidskards/CSGOArduino).
+
 ## Notes
 Only meant for one instance of the application to be run with one hue bridge. Don't really know how it will behave if several clients connect to the same hue bridge in a LAN setting.
 
