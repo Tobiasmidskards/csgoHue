@@ -1,43 +1,68 @@
 // const HueConnection = require('./HueConnection');
-import HueConnection from './HueConnection';
 
-const hue = require('node-hue-api');
+const axios = require('axios');
+const myIp = require('my-local-ip')();
 
 export default class HueAction {
-  constructor(ip, username) {
-    this.hueConnection = new HueConnection(ip, username);
-    this.api = this.hueConnection.getConnection();
-    this.state = hue.lightState.create();
+  constructor() {
+    this.ips = [];
+    this.ipArray = myIp.split('.', 3);
+    // eslint-disable-next-line prefer-destructuring
+    this.ipMask = `${this.ipArray[0]}.${this.ipArray[1]}.${this.ipArray[2]}`;
+    this.searchBridge();
   }
-
   singleLightsAction(light, state) {
     if (!this.api) return;
 
     this.api.setGroupLightState(light, state)
-      .then((result) => {
-        console.log(result);
-      })
-      .fail((error) => {
-        throw error;
-      })
-      .done();
+        .then((result) => {
+          console.log(result);
+        })
+        .fail((error) => {
+          throw error;
+        })
+        .done();
+  }
+  // eslint-disable-next-line class-methods-use-this,no-unused-vars
+  interruptWhile(ip) {
+    axios.get(`${ip}stop`)
+        .catch((e) => {
+          console.log(e);
+        });
+  }
+  // eslint-disable-next-line class-methods-use-this,no-unused-vars
+  allLightsAction(r, g, b, bri) {
+    for (let i = 0; i < this.ips.length; i += 1) {
+      axios.get(`${this.ips[i]}set?red=${r}&grn=${g}&blu=${b}&bri=${bri}`)
+          .catch((e) => {
+            console.log(e);
+          });
+    }
   }
 
-  allLightsAction(state) {
-    if (!this.api) return;
-
-    this.api.setGroupLightState(0, state)
-      .then((result) => {
-        console.log(result);
-      })
-      .fail((error) => {
-        throw error;
-      })
-      .done();
+  allLightsActionSpecial(special) {
+    for (let i = 0; i < this.ips.length; i += 1) {
+      axios.get(`${this.ips[i]}${special}`)
+          .catch((e) => {
+            console.log(e);
+          });
+    }
+  }
+  // eslint-disable-next-line class-methods-use-this
+  find(i) {
+    return axios.get(`http://${this.ipMask}.${i}/find`);
   }
 
   searchBridge() {
-    return this.hueConnection.searchBridge();
+    this.ips = [];
+    for (let i = 0; i < 255; i += 1) {
+      this.find(i)
+          .then((resp) => {
+            if (resp.data === 'CSGOLIGHT') {
+              this.ips.push(`http://${this.ipMask}.${i}/`);
+            }
+          });
+    }
   }
 
   getCreds() {
@@ -58,69 +83,63 @@ export default class HueAction {
     }, 1000);
   }
 
+  // eslint-disable-next-line no-unused-vars
   blink(sleep, transitionTime, x, y, bri = 254, sat = 254) {
-    const stateOn = hue.lightState.create().off().bri(bri)
-      .sat(sat)
-      .xy(x, y)
-      .transitionTime(transitionTime)
-      .on(true);
-    this.allLightsAction(stateOn);
+    this.allLightsAction(255, 0, 0, bri);
     setTimeout(() => {
-      this.allLightsAction(this.state.transitionTime(transitionTime).off());
+      this.off();
     }, sleep);
   }
 
+  bombticking() {
+    this.allLightsActionSpecial('bomb');
+  }
+
+  // eslint-disable-next-line class-methods-use-this
   off() {
-    const state = hue.lightState.create().off();
-    this.allLightsAction(state);
+    this.allLightsAction(0, 0, 0, 0);
+    this.allLightsAction(0, 0, 0, 0);
+  }
+
+  ctwin() {
+    this.allLightsAction(0, 0, 255, 255);
+    this.allLightsAction(0, 0, 255, 255);
+  }
+
+  twin() {
+    this.allLightsAction(255, 0, 0, 255);
+    this.allLightsAction(255, 0, 0, 255);
   }
 
   default() {
-    const state = hue.lightState.create().off().white(350, 20)
-      .effect('none')
-      .on(true)
-      .transitionTime(2);
-    this.allLightsAction(state);
+    this.allLightsAction(50, 0, 50, 0);
+    this.allLightsAction(50, 0, 50, 0);
   }
 
   explode() {
-    const state = hue.lightState.create().off().bri(254)
-      .sat(254)
-      .xy(0.5546, 0.4111)
-      .effect('none')
-      .on(true)
-      .transitionTime(2);
-    this.allLightsAction(state);
+    this.allLightsActionSpecial('explode');
+  }
+
+  sparkle() {
+    this.allLightsActionSpecial('sparkle');
   }
 
   freeze() {
-    const state = hue.lightState.create().off().bri(254)
-      .sat(254)
-      .xy(0.1557, 0.1454)
-      .effect('none')
-      .on(true)
-      .transitionTime(2);
-    this.allLightsAction(state);
+    this.colorloop();
   }
 
   defuse() {
-    const state = hue.lightState.create().off().bri(254)
-      .sat(254)
-      .xy(0.1955, 0.6808)
-      .effect('none')
-      .on(true)
-      .transitionTime(2);
-    this.allLightsAction(state);
-  }
-
-  colorloop() {
-    const state = hue.lightState.create().on().bri(254).sat(254)
-      .effect('colorloop');
-    this.allLightsAction(state);
+    console.log('defused!!"#');
+    this.allLightsAction(0, 255, 0, 255);
+    this.allLightsAction(0, 255, 0, 255);
   }
 
   startupBlink() {
     this.blink(1000, 0.5, 0.1557, 0.1454);
+  }
+
+  colorloop() {
+    this.allLightsActionSpecial('sparkle');
   }
 }
 // module.exports = HueAction;

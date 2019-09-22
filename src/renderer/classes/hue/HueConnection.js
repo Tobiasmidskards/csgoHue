@@ -15,7 +15,6 @@ export default class HueConnection {
     }
 
     this.api = new hue.HueApi(this.ip, this.username);
-
     return this.api;
   }
 
@@ -25,16 +24,16 @@ export default class HueConnection {
 
       this.ip = result[0].ipaddress;
       this.getUserName()
-        .then((response) => {
-          if (response.data[0].error) {
-            alert('Link btn not pressed');
-            return;
-          }
-          this.username = response.data[0].success.username;
-        })
-        .catch((err) => {
-          throw err;
-        });
+          .then((response) => {
+            if (response.data[0].error) {
+              alert('Link btn not pressed');
+              return;
+            }
+            this.username = response.data[0].success.username;
+          })
+          .catch((err) => {
+            throw err;
+          });
     }).done();
   }
 
