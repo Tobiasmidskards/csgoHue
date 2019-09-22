@@ -24,6 +24,13 @@ export default class StateExtractor {
       if (data.bomb === 'exploded') return 'exploded';
       if (data.bomb === 'defused') return 'defused';
     }
+    // ct win
+    if (data.win_team === 'CT') {
+      return 'ctwin';
+    }
+    if (data.win_team === 'T') {
+      return 'twin';
+    }
 
     return '';
   }

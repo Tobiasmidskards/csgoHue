@@ -19,10 +19,22 @@
                 <div class="button is-fullwidth is-warning" @click="triggerState('exploded')">Exploded</div>
             </div>
             <div class="column">
-                <div class="button is-fullwidth is-success" @click="triggerState('defuse')">Defuse</div>
+                <div class="button is-fullwidth is-success" @click="triggerState('defused')">Defuse</div>
             </div>
             <div class="column">
-                <div class="button is-fullwidth is-primary" @click="triggerState('colorloop')">ColorLoop</div>
+                <div class="button is-fullwidth is-light" @click="triggerState('sparkle')">Sparkle</div>
+            </div>
+            <div class="column">
+            </div>
+        </div>
+        <div class="columns is-mobile">
+            <div class="column">
+                <div class="button is-fullwidth is-danger" @click="triggerState('twin')">T win</div>
+            </div>
+            <div class="column">
+                <div class="button is-fullwidth is-info" @click="triggerState('ctwin')">CT win</div>
+            </div>
+            <div class="column">
             </div>
             <div class="column">
             </div>
@@ -35,25 +47,25 @@
     import { mapGetters } from 'vuex';
 
     export default {
-      props: [],
-      data() {
-        return {
-          default: null,
-        };
-      },
-      mounted() {
-      },
-      computed: {
-        ...mapGetters([
-          'game_data',
-          'current_state',
-        ]),
-      },
-      methods: {
-        triggerState(state) {
-          this.$store.dispatch('setCurrentState', state);
+        props: [],
+        data() {
+            return {
+                default: null,
+            };
         },
-      },
+        mounted() {
+        },
+        computed: {
+            ...mapGetters([
+                'game_data',
+                'current_state',
+            ]),
+        },
+        methods: {
+            triggerState(state) {
+                this.$store.dispatch('setCurrentState', state);
+            },
+        },
     };
 </script>
 

@@ -21,6 +21,12 @@ export default class GameEventHandler {
     }
 
     switch (state) {
+      case 'ctwin':
+        this.hueAction.ctwin();
+        break;
+      case 'twin':
+        this.hueAction.twin();
+        break;
       case 'freeze':
         this.hueAction.freeze();
         break;
@@ -33,7 +39,7 @@ export default class GameEventHandler {
       case 'planted':
         this.bombPlant(state);
         break;
-      case 'defuse':
+      case 'defused':
         this.hueAction.defuse();
         break;
       case 'exploded':
@@ -41,6 +47,9 @@ export default class GameEventHandler {
         break;
       case 'colorloop':
         this.colorLoop();
+        break;
+      case 'sparkle':
+        this.hueAction.sparkle();
         break;
       default:
         this.hueAction.default();
@@ -52,37 +61,19 @@ export default class GameEventHandler {
 
   bombPlant(state) {
     if (state !== 'planted') return;
-    this.timer = new Timer({ interval: 1000, stopwatch: false });
-    this.timer.start(40000, 2000);
-    this.timer.on('statusChanged', status => console.log('status change:', status));
-
-    this.hueAction.blink(1000, 4, 0.679, 0.3138, 150, 200);
-
-    this.timer.on('tick', (ms) => {
-      console.log(ms);
-      if (ms >= 20000) {
-        this.hueAction.blink(1000, 4, 0.679, 0.3138, 50, 150);
-      }
-      if (ms > 10000 && ms < 20000) {
-        this.hueAction.blink(1000, 4, 0.679, 0.3138, 140, 254);
-      }
-      if (ms > 0 && ms < 10000) {
-        this.hueAction.blink(1000, 4, 0.679, 0.3138);
-      }
-    });
+    this.hueAction.bombticking();
   }
 
   colorLoop() {
     this.hueAction.off();
     this.hueAction.colorloop();
-    setTimeout(() => { this.hueAction.off(); }, 15000);
   }
 
   getHueApi() {
     return this.hueAction.api;
   }
 
+  // eslint-disable-next-line class-methods-use-this
   startup() {
-    this.hueAction.startupBlink();
   }
 }
