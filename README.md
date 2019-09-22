@@ -3,7 +3,7 @@
 
 # csgo-hue
 
-Electron app for capturing csgo game events and triggering Hue lights based on game events
+Electron app for capturing csgo game events and triggering Arduino lights based on game events
 
 #### Build Setup
 
@@ -22,10 +22,6 @@ npm run build
 npm run lint
 
 ```
-
----
-
-This project was generated with [electron-vue](https://github.com/SimulatedGREG/electron-vue) using [vue-cli](https://github.com/vuejs/vue-cli). Documentation about the original structure can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).
 
 ## Notes
 Only meant for one instance of the application to be run with one hue bridge. Don't really know how it will behave if several clients connect to the same hue bridge in a LAN setting.
